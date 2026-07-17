@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
 
 from database import Base, engine
 from routers import auth, vehicles
@@ -22,13 +24,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Home Route
-@app.get("/")
-def home():
-    return {
-        "message": "Car Dealership Inventory API is Running"
-    }
-
 # Routers
 app.include_router(auth.router)
 app.include_router(vehicles.router)
+
+# Serve Frontend Static Files
+frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend"))
+app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")

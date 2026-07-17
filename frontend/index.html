@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Dealership Inventory Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Background glows for premium look -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ========================================== -->
+    <!-- AUTHENTICATION VIEW -->
+    <!-- ========================================== -->
+    <div id="auth-view" class="auth-container">
+        <!-- Login Card -->
+        <div id="login-card" class="auth-card">
+            <div class="auth-header">
+                <div class="logo-icon">
+                    <i data-lucide="car"></i>
+                </div>
+                <h2>Welcome Back</h2>
+                <p>Sign in to manage your inventory</p>
+            </div>
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail" class="input-icon"></i>
+                        <input type="email" id="login-email" placeholder="name@dealership.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock" class="input-icon"></i>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+                    <span>Sign In</span>
+                    <i data-lucide="arrow-right"></i>
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="#" id="to-register">Register here</a></p>
+            </div>
+        </div>
+
+        <!-- Register Card -->
+        <div id="register-card" class="auth-card hidden">
+            <div class="auth-header">
+                <div class="logo-icon">
+                    <i data-lucide="user-plus"></i>
+                </div>
+                <h2>Create Account</h2>
+                <p>Register as a staff member or client</p>
+            </div>
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="register-username">Full Name</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="user" class="input-icon"></i>
+                        <input type="text" id="register-username" placeholder="John Doe" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail" class="input-icon"></i>
+                        <input type="email" id="register-email" placeholder="name@dealership.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock" class="input-icon"></i>
+                        <input type="password" id="register-password" placeholder="Min. 6 characters" required minlength="6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="register-role">System Role</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="shield" class="input-icon"></i>
+                        <select id="register-role" required>
+                            <option value="user">User (View & Purchase)</option>
+                            <option value="admin">Admin (Full Inventory Control)</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="register-btn">
+                    <span>Create Account</span>
+                    <i data-lucide="arrow-right"></i>
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="#" id="to-login">Sign in here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MAIN DASHBOARD VIEW -->
+    <!-- ========================================== -->
+    <div id="dashboard-view" class="dashboard-container hidden">
+        <!-- Navigation Header -->
+        <header class="dashboard-header">
+            <div class="header-logo">
+                <div class="logo-badge">
+                    <i data-lucide="car"></i>
+                </div>
+                <div>
+                    <h1>DriveSync</h1>
+                    <p class="subtitle">Dealership Inventory Management</p>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar" id="user-avatar">
+                    <i data-lucide="user"></i>
+                </div>
+                <div class="user-info">
+                    <span id="user-name" class="username">Loading...</span>
+                    <span id="user-role-badge" class="role-badge">User</span>
+                </div>
+                <button id="logout-btn" class="btn btn-icon-only logout-btn" title="Logout">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Bar Section -->
+        <section class="stats-grid">
+            <div class="stats-card">
+                <div class="stats-icon text-primary">
+                    <i data-lucide="database"></i>
+                </div>
+                <div class="stats-data">
+                    <span class="stats-label">Total Vehicles</span>
+                    <h3 id="stat-total-vehicles">0</h3>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-success">
+                    <i data-lucide="dollar-sign"></i>
+                </div>
+                <div class="stats-data">
+                    <span class="stats-label">Inventory Value</span>
+                    <h3 id="stat-total-val">0</h3>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-warning">
+                    <i data-lucide="alert-triangle"></i>
+                </div>
+                <div class="stats-data">
+                    <span class="stats-label">Low Stock</span>
+                    <h3 id="stat-low-stock">0</h3>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-icon text-info">
+                    <i data-lucide="tag"></i>
+                </div>
+                <div class="stats-data">
+                    <span class="stats-label">Categories</span>
+                    <h3 id="stat-categories">0</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Control Hub -->
+        <section class="control-hub">
+            <div class="search-filter-wrapper">
+                <div class="search-box">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Search by make, model, or category...">
+                    <button id="search-clear-btn" class="clear-btn hidden">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="filter-box">
+                    <select id="category-filter">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+            </div>
+            <div class="actions-wrapper">
+                <button id="add-vehicle-trigger" class="btn btn-primary admin-only">
+                    <i data-lucide="plus"></i>
+                    <span>Add New Car</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Grid for Vehicle Cards -->
+        <main class="inventory-section">
+            <div id="loading-state" class="loading-container">
+                <div class="spinner"></div>
+                <p>Loading inventory...</p>
+            </div>
+            <div id="empty-state" class="empty-container hidden">
+                <div class="empty-icon">
+                    <i data-lucide="package-open"></i>
+                </div>
+                <h3>No Cars Found</h3>
+                <p>Try refining your search or add a new car to the inventory.</p>
+            </div>
+            <div id="vehicle-grid" class="vehicle-grid">
+                <!-- Vehicle Cards injected here via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODALS SECTION -->
+    <!-- ========================================== -->
+
+    <!-- Add/Edit Vehicle Modal -->
+    <div id="vehicle-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title">Add New Vehicle</h3>
+                <button id="modal-close" class="btn-close-modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form id="vehicle-form" class="modal-form">
+                <input type="hidden" id="form-vehicle-id">
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label for="form-make">Make / Manufacturer</label>
+                        <input type="text" id="form-make" placeholder="e.g. Tesla, BMW" required>
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="form-model">Model Name</label>
+                        <input type="text" id="form-model" placeholder="e.g. Model S, M4" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="form-category">Category</label>
+                    <input type="text" id="form-category" placeholder="e.g. Sedan, SUV, Electric, Coupe" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label for="form-price">Price ($ USD)</label>
+                        <input type="number" id="form-price" min="0" step="0.01" placeholder="e.g. 69900" required>
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="form-quantity">Initial Stock Quantity</label>
+                        <input type="number" id="form-quantity" min="0" step="1" placeholder="e.g. 5" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modal-cancel" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" id="modal-submit-btn" class="btn btn-primary">Save Vehicle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Restock Modal -->
+    <div id="restock-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-card-sm">
+            <div class="modal-header">
+                <h3>Restock Vehicle</h3>
+                <button id="restock-modal-close" class="btn-close-modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form id="restock-form" class="modal-form">
+                <input type="hidden" id="restock-vehicle-id">
+                <div class="restock-info">
+                    <p id="restock-car-title">Car Title Details</p>
+                    <div class="stock-display">
+                        Current stock: <span id="restock-current-qty" class="badge">0</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="restock-qty-input">Quantity to Add</label>
+                    <input type="number" id="restock-qty-input" min="1" step="1" value="1" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="restock-modal-cancel" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
