@@ -2,7 +2,17 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./database.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    # If running on Vercel, default SQLite to /tmp folder (only writable location)
+    if os.getenv("VERCEL"):
+        DATABASE_URL = "sqlite:////tmp/database.db"
+    else:
+        DATABASE_URL = "sqlite:///./database.db"
+
+# SQLAlchemy requires postgresql:// instead of postgres://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 if DATABASE_URL.startswith("sqlite"):
     # Extract path and make directory if it doesn't exist
