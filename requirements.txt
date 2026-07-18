@@ -7,3 +7,4 @@ bcrypt
 python-multipart
 pydantic
 email-validator
+psycopg2-binary
