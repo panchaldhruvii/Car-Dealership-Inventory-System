@@ -28,6 +28,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(vehicles.router)
 
-# Serve Frontend Static Files
+# Serve Frontend Static Files (Defensive mount for serverless compatibility)
 frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend"))
-app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+if os.path.exists(frontend_dir):
+    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
