@@ -5,6 +5,15 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./database.db")
 
 if DATABASE_URL.startswith("sqlite"):
+    # Extract path and make directory if it doesn't exist
+    db_file_path = DATABASE_URL.replace("sqlite:///", "")
+    db_dir = os.path.dirname(db_file_path)
+    if db_dir and not os.path.exists(db_dir):
+        try:
+            os.makedirs(db_dir, exist_ok=True)
+        except Exception as e:
+            print(f"Warning: Failed to create database directory {db_dir}: {e}")
+            
     engine = create_engine(
         DATABASE_URL,
         connect_args={"check_same_thread": False}
