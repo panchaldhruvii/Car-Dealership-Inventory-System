@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -12,7 +13,7 @@ from models import User
 # JWT Configuration
 # ==========================
 
-SECRET_KEY = "car_dealership_secret_key_2026"
+SECRET_KEY = os.getenv("SECRET_KEY", "car_dealership_secret_key_2026")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 

@@ -531,8 +531,8 @@ function openVehicleModal(vehicleId = null) {
         document.getElementById("form-category").value = car.category;
         document.getElementById("form-price").value = car.price;
         document.getElementById("form-quantity").value = car.quantity;
-        // Make quantity input disabled for editing (typically restocking is done separately)
-        document.getElementById("form-quantity").disabled = true;
+        // Make quantity input editable for editing
+        document.getElementById("form-quantity").disabled = false;
     } else {
         // Add Mode
         title.textContent = "Add New Vehicle";
@@ -568,7 +568,7 @@ async function saveVehicle(e) {
             const updated = await apiCall(`/vehicles/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ make, model, category, price })
+                body: JSON.stringify({ make, model, category, price, quantity })
             });
             
             showToast("Vehicle updated successfully.");
